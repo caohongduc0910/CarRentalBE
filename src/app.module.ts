@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -15,6 +14,7 @@ import { Violation } from './violations/violation.entity';
 import { Customer } from './customers/customer.entity';
 import { Contract } from './contracts/contract.entity';
 import { AuthModule } from './auth/auth.module';
+import { UserModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -34,7 +34,8 @@ import { AuthModule } from './auth/auth.module';
     ViolationModule,
     CustomerModule,
     ContractModule,
-    AuthModule
+    AuthModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

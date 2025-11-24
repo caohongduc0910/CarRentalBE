@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import TimestampEntity from 'src/common/entities/base.entity';
 import { Contract } from 'src/contracts/contract.entity';
 import { Entity, Column, OneToMany } from 'typeorm';

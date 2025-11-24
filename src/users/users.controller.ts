@@ -1,30 +1,23 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 import {
   Controller,
   Get,
-  Post,
-  Body,
   Param,
   Patch,
+  Body,
   Delete,
+  Query,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './users.service';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  create(@Body() dto: CreateUserDto) {
-    return this.userService.create(dto);
-  }
-
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  findAll(@Query('page') page: number, @Query('limit') limit: number) {
+    console.log(page, limit);
+    return this.userService.findAll(+page, +limit);
   }
 
   @Get(':id')

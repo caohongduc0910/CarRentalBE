@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './user.entity';
 
@@ -12,13 +11,26 @@ export class UserService {
     private repo: Repository<User>,
   ) {}
 
-  create(dto: CreateUserDto) {
-    const entity = this.repo.create(dto);
-    return this.repo.save(entity);
-  }
+  async findAll(page = 1, limit = 10) {
+    const skip = (page - 1) * limit;
 
-  findAll() {
-    return this.repo.find();
+    const [data, total] = await this.repo.findAndCount({
+      where: {
+        role: 'user',
+      },
+      skip,
+      take: limit,
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+    };
   }
 
   async findOne(id: number) {

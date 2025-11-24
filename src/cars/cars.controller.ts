@@ -6,6 +6,7 @@ import {
   Delete,
   Param,
   Body,
+  Query,
 } from '@nestjs/common';
 import { CarService } from './cars.service';
 import { CreateCarDto } from './dto/create-car.dto';
@@ -21,7 +22,11 @@ export class CarController {
   }
 
   @Get()
-  findAll() {
+  findAll(@Query('start') start?: string, @Query('end') end?: string) {
+    if (start && end) {
+      return this.carService.findAvailable(start, end);
+    }
+
     return this.carService.findAll();
   }
 

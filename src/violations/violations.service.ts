@@ -23,6 +23,9 @@ export class ViolationService {
       .findAndCount({
         skip,
         take: limit,
+        order: {
+          createdAt: 'DESC',
+        },
       })
       .then(([data, total]) => ({
         data,

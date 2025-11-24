@@ -52,6 +52,9 @@ export class ContractService {
       where,
       skip,
       take: limit,
+      order: {
+        createdAt: 'DESC',
+      },
       relations: ['user', 'car', 'collateral'],
     });
 

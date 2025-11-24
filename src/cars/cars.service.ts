@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -21,6 +20,23 @@ export class CarService {
   findAll() {
     // return this.repo.find({ relations: ['contracts'] });
     return this.repo.find();
+  }
+
+  async findAvailable(start: string, end: string) {
+    return this.repo
+      .createQueryBuilder('car')
+      .leftJoin('car.contracts', 'contract')
+      .where(
+        `
+      contract.id IS NULL OR 
+      NOT (
+        contract.startDate <= :end
+        AND contract.endDate >= :start
+      )
+    `,
+        { start, end },
+      )
+      .getMany();
   }
 
   async findOne(id: number) {
