@@ -7,12 +7,18 @@ import { Contract } from './contract.entity';
 import { User } from 'src/users/user.entity';
 import { Car } from 'src/cars/car.entity';
 import { Collateral } from 'src/collaterals/collateral.entity';
+import { ContractCollateral } from './contract-collateral.entity';
+import { ContractCar } from './contract-car.entity';
 
 @Injectable()
 export class ContractService {
   constructor(
     @InjectRepository(Contract)
     private repo: Repository<Contract>,
+    @InjectRepository(ContractCollateral)
+    private contractCollateralRepo: Repository<ContractCollateral>,
+    @InjectRepository(ContractCar)
+    private contractCarRepo: Repository<ContractCar>,
     @InjectRepository(User)
     private usersRepo: Repository<User>,
     @InjectRepository(Car)
@@ -40,7 +46,26 @@ export class ContractService {
       estimatedPrice: dto.estimatedPrice,
     });
 
-    return this.repo.save(entity);
+    await entity.save();
+
+    await Promise.all([
+      this.contractCarRepo.save(
+        this.contractCarRepo.create({
+          contract: entity,
+          car,
+          quantity: 1,
+        }),
+      ),
+      this.contractCollateralRepo.save(
+        this.contractCollateralRepo.create({
+          contract: entity,
+          collateral,
+          quantity: 1,
+        }),
+      ),
+    ]);
+
+    return entity;
   }
 
   async findAll(userId: number, page = 1, limit = 10) {

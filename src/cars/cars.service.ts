@@ -25,17 +25,19 @@ export class CarService {
   async findAvailable(start: string, end: string) {
     return this.repo
       .createQueryBuilder('car')
-      .leftJoin('car.contracts', 'contract')
-      .where(
-        `
-      contract.id IS NULL OR 
-      NOT (
-        contract.startDate <= :end
-        AND contract.endDate >= :start
-      )
-    `,
-        { start, end },
-      )
+      .where((qb) => {
+        const subQuery = qb
+          .subQuery()
+          .select('1')
+          .from('contract', 'contract')
+          .where('contract.carId = car.id')
+          .andWhere('contract.startDate < :end')
+          .andWhere('contract.endDate > :start')
+          .getQuery();
+
+        return `NOT EXISTS (${subQuery})`;
+      })
+      .setParameters({ start, end })
       .getMany();
   }
 

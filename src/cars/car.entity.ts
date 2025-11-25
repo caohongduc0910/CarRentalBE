@@ -1,4 +1,5 @@
 import TimestampEntity from 'src/common/entities/base.entity';
+import { ContractCar } from 'src/contracts/contract-car.entity';
 import { Contract } from 'src/contracts/contract.entity';
 import { Entity, Column, OneToMany } from 'typeorm';
 
@@ -18,4 +19,7 @@ export class Car extends TimestampEntity {
 
   @OneToMany(() => Contract, (contract) => contract.car)
   contracts: Contract[];
+
+  @OneToMany(() => ContractCar, (cc) => cc.car)
+  contractCars: ContractCar[];
 }

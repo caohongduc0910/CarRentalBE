@@ -6,9 +6,20 @@ import { Contract } from './contract.entity';
 import { User } from 'src/users/user.entity';
 import { Car } from 'src/cars/car.entity';
 import { Collateral } from 'src/collaterals/collateral.entity';
+import { ContractCollateral } from './contract-collateral.entity';
+import { ContractCar } from './contract-car.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Contract, User, Car, Collateral])],
+  imports: [
+    TypeOrmModule.forFeature([
+      Contract,
+      User,
+      Car,
+      Collateral,
+      ContractCollateral,
+      ContractCar,
+    ]),
+  ],
   controllers: [ContractsController],
   providers: [ContractService],
 })
