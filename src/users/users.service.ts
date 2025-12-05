@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './user.entity';
 
@@ -41,6 +41,24 @@ export class UserService {
 
   async update(id: number, dto: UpdateUserDto) {
     const user = await this.findOne(id);
+    const [existUserEmail, existUserPhone, existUserCCCD] = await Promise.all([
+      this.repo.findOne({
+        where: { email: dto.email, id: Not(id) },
+      }),
+      this.repo.findOne({
+        where: { phone: dto.phone, id: Not(id) },
+      }),
+      this.repo.findOne({
+        where: { cccd: dto.cccd, id: Not(id) },
+      }),
+    ]);
+
+    if (existUserEmail) throw new NotFoundException('Email already exists');
+
+    if (existUserPhone)
+      throw new NotFoundException('Phone number already exists');
+
+    if (existUserCCCD) throw new NotFoundException('CCCD already exists');
     Object.assign(user, dto);
     return this.repo.save(user);
   }
